@@ -1,5 +1,5 @@
 {
-  "description": "OKF 노드(docs/knowledge·docs/history) 작성 시 자동 검증 + 인덱스 갱신",
+  "description": "OKF 노드(docs/knowledge, docs/history) 작성 시 자동 검증과 인덱스 갱신",
   "hooks": {
     "PostToolUse": [
       {

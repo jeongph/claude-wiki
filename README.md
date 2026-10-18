@@ -33,7 +33,7 @@
 
 ### 이전 이름(claude-okf)을 쓰던 경우
 
-플러그인 이름이 `claude-okf`에서 `claude-wiki`로 바뀌었다. OKF는 노드 포맷 표준의 이름이라 플러그인이 포맷 검사기처럼 읽혔으나, 실제 역할은 노드 작성·검증·인덱스 생성·질의응답까지 포함한다.
+플러그인 이름이 `claude-okf`에서 `claude-wiki`로 바뀌었다. OKF는 노드 포맷 표준의 이름이라 플러그인이 포맷 검사기처럼 읽혔으나, 실제 역할은 노드 작성, 검증, 인덱스 생성, 질의응답까지 포함한다.
 
 식별자가 달라져 자동 전환되지 않으므로 이전 것을 제거하고 새로 설치한다.
 
@@ -43,19 +43,19 @@
 /plugin install claude-wiki@jeongph-claude-plugins
 ```
 
-명령·skill·agent 이름의 접두사도 `okf-`에서 `wiki-`로 바뀌었다 (`/okf-ask` → `/wiki-ask` 등). **노드 포맷과 OKF 규약 자체는 그대로**이므로 기존 `docs/knowledge/` 내용은 손댈 필요가 없다.
+명령, skill, agent 이름의 접두사도 `okf-`에서 `wiki-`로 바뀌었다 (`/okf-ask` → `/wiki-ask` 등). **노드 포맷과 OKF 규약 자체는 그대로**이므로 기존 `docs/knowledge/` 내용은 손댈 필요가 없다.
 
 ## 컴포넌트
 
 | 종류 | 이름 | 역할 |
 |------|------|------|
-| skill | `wiki-authoring` | OKF 노드 작성·편집 가이드 — 양식 안내 + 노드 초안 생성 |
-| skill | `wiki-lint` | OKF 노드 정적 검사 — frontmatter 필수 필드·관계 링크 검증 |
-| command | `/wiki-ingest` | 코드·문서를 분석해 OKF 노드 초안을 생성하고 wiki에 추가 |
+| skill | `wiki-authoring` | OKF 노드 작성과 편집 가이드. 양식 안내와 노드 초안 생성 |
+| skill | `wiki-lint` | OKF 노드 정적 검사. frontmatter 필수 필드와 관계 링크 검증 |
+| command | `/wiki-ingest` | 코드와 문서를 분석해 OKF 노드 초안을 생성하고 wiki에 추가 |
 | command | `/wiki-validate` | 지정 경로의 OKF 노드를 검증하고 오류를 보고 |
-| command | `/wiki-lint` | OKF 노드 lint 실행 (오래된 링크·중복 노드·모순 점검) |
+| command | `/wiki-lint` | OKF 노드 lint 실행 (오래된 링크, 중복 노드, 모순 점검) |
 | command | `/wiki-ask` | OKF wiki를 기반으로 근거가 있는 답변 생성 |
-| hook | `PostToolUse (Write\|Edit 트리거)` | 노드 저장 시 자동으로 검증·index 갱신 실행 |
+| hook | `PostToolUse (Write\|Edit 트리거)` | 노드 저장 시 자동으로 검증과 index 갱신 실행 |
 | agent | `wiki-enrichment` | 코드베이스 분석 후 OKF 노드에 내용을 보강하는 전용 에이전트 |
 
 ## 사용 예
@@ -70,14 +70,14 @@
 
 ### 노드 작성 시 자동 검증
 
-OKF 노드 파일(`.md`)을 편집·저장하면 `PostToolUse (Write|Edit 트리거)` 훅이 자동으로 실행된다.
+OKF 노드 파일(`.md`)을 편집하거나 저장하면 `PostToolUse (Write|Edit 트리거)` 훅이 자동으로 실행된다.
 
 - frontmatter 필수 필드(`type` 등) 누락 검사
 - 관계 링크 유효성 검증
 - `_INDEX.md` 갱신
 
 노드 디렉토리는 `docs/knowledge/` 또는 `docs/history/`만 인식한다. `docs/okf/`는
-더 이상 인식되지 않는다 — 그 경로에 노드가 있다면 `docs/knowledge/`로 옮긴다.
+더 이상 인식되지 않으므로, 그 경로에 노드가 있다면 `docs/knowledge/`로 옮긴다.
 
 `docs/knowledge/`는 노드 지도(`| 노드 | type | 요약 |`)를, `docs/history/`는
 작업 이력(`| 날짜 | 제목 | tags |`, 최신 우선)을 생성한다. `_INDEX.md`는
@@ -107,8 +107,8 @@ OKF wiki를 검색해 근거가 있는 답변을 생성한다.
 
 ## 세션 핸드오프는 어디로 갔나
 
-`handoff` 스킬·`/handoff` 커맨드는 [claude-tidy](https://github.com/jeongph/claude-tidy) 플러그인으로 이관됐다 (v0.5.0). claude-tidy의 handoff는 범용 세션 인수인계를 담당하며, OKF 프로젝트(`docs/knowledge/`)를 감지하면 기존과 동일한 절차(History 노드 마감 · resume 스냅샷 · 트래커 동기화)를 수행한다.
+`handoff` 스킬과 `/handoff` 커맨드는 [claude-tidy](https://github.com/jeongph/claude-tidy) 플러그인으로 이관됐다 (v0.5.0). claude-tidy의 handoff는 범용 세션 인수인계를 담당하며, OKF 프로젝트(`docs/knowledge/`)를 감지하면 기존과 같은 절차(History 노드 마감, resume 스냅샷, 트래커 동기화)를 수행한다.
 
 ## 라이선스
 
-MIT — [LICENSE](LICENSE) 참조
+MIT ([LICENSE](LICENSE) 참조)

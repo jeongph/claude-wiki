@@ -2,9 +2,9 @@
 # lib-resolve-dir.sh 회귀 테스트
 #
 # 목적: 훅이 도는 범위를 "위키 안의 파일을 편집했을 때"로 한정한다.
-#   이전에는 편집 파일의 상위를 거슬러 올라가며 docs/knowledge 를 "찾았기" 때문에,
+#   이전에는 편집 파일의 상위를 거슬러 올라가며 docs/knowledge를 "찾았기" 때문에,
 #   레포 안 어떤 파일을 건드려도(README, src/**) index가 재생성됐고
-#   루프가 / 까지 올라가 레포 경계마저 넘었다.
+#   루프가 /까지 올라가 레포 경계마저 넘었다.
 set -uo pipefail
 
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
@@ -18,13 +18,13 @@ fail=0
 ok()   { printf '  ok   %s\n' "$1"; pass=$((pass + 1)); }
 nope() { printf '  FAIL %s\n' "$1"; fail=$((fail + 1)); }
 
-# 훅이 넘기는 형태의 stdin JSON으로 resolve_wiki_dir 를 호출한다.
+# 훅이 넘기는 형태의 stdin JSON으로 resolve_wiki_dir를 호출한다.
 resolve() {
   printf '{"tool_name":"Write","tool_input":{"file_path":"%s"}}' "$1" \
     | bash -c "source '$LIB'; resolve_wiki_dir ''"
 }
 
-# 기대 경로와 실제 결과를 비교한다. want 가 빈 문자열이면 "무동작"을 기대한다.
+# 기대 경로와 실제 결과를 비교한다. want가 빈 문자열이면 "무동작"을 기대한다.
 expect() {
   local label="$1" file="$2" want="$3" got
   got=$(resolve "$file")
@@ -50,7 +50,7 @@ mkdir -p "$REPO/.git"   # 레포 경계 표시용
 : > "$REPO/src/deep/nested/App.tsx"
 : > "$REPO/README.md"
 
-# docs/history 를 쓰는 레포를 만든다.
+# docs/history를 쓰는 레포를 만든다.
 REPO2="$WORK/repo-history"
 mkdir -p "$REPO2/docs/history"
 : > "$REPO2/docs/history/2026-01-02-001-claude-작업.md"
@@ -87,7 +87,7 @@ else
   nope "인자 직접 지정 → 그대로 반환 (실제: ${direct:-<빈값>})"
 fi
 
-# --- file_path 가 없는 payload 는 조용히 무동작 ---
+# --- file_path가 없는 payload는 조용히 무동작 ---
 empty=$(printf '{"tool_name":"Bash"}' | bash -c "source '$LIB'; resolve_wiki_dir ''")
 if [ -z "$empty" ]; then
   ok "file_path 없는 payload → 무동작"
