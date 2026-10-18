@@ -55,7 +55,7 @@ agent가 반환한 노드 초안을 화면에 출력한다.
 
 1. 저장 경로 결정: `docs/knowledge/`. 파일명: `<경로>/<노드명>.md` (`wiki-authoring` skill의 날짜 표기 규칙 준수)
 2. 파일 작성
-3. `docs/knowledge/_INDEX.md`를 열어 새 노드 항목 추가
+3. `docs/knowledge/_INDEX.md`는 직접 편집하지 않는다. 파일을 저장하면 PostToolUse 훅(`update-index.sh`)이 새 노드를 자동으로 반영한다
 4. `docs/knowledge/log.md`에 아래 형식으로 한 줄 추가 (없으면 생성)
 
 ```
@@ -65,7 +65,7 @@ agent가 반환한 노드 초안을 화면에 출력한다.
 5. 변경 사항 요약 보고
 
 ```bash
-# _INDEX.md 존재 확인
+# 훅이 _INDEX.md를 갱신했는지 확인
 ls docs/knowledge/_INDEX.md
 ```
 
