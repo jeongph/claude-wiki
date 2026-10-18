@@ -31,7 +31,7 @@ make_fixture() {
 }
 
 # history 노드 픽스처. 파일명은 yyyy-MM-dd-NNN-<author>-<작업명>.md 규칙을 따른다.
-# 2026-01-02에 순번(001·002)만 다른 문서 두 개를 둬서, 날짜가 같을 때
+# 2026-01-02에 순번(001, 002)만 다른 문서 두 개를 둬서, 날짜가 같을 때
 # 순번 역순으로 정렬되는지 검증할 수 있게 한다.
 # 마지막 문서는 본문에도 YAML 리스트처럼 보이는 줄을 둬서, frontmatter 범위를
 # 벗어난 항목이 tags에 섞이지 않는지 확인한다.
@@ -48,7 +48,7 @@ make_history_fixture() {
 
 # 플로우 스타일(tags: [a, b]) frontmatter 픽스처. OKF 컨벤션 문서의 필드
 # 템플릿이 이 표기를 예시로 보여주므로 실제로 파싱되는지 확인해야 한다.
-# 간격이 일관되지 않은 표기·단일 항목·빈 목록을 각각 검증하고, 첫 문서는
+# 간격이 일관되지 않은 표기, 단일 항목, 빈 목록을 각각 검증하고, 첫 문서는
 # 본문에도 리스트처럼 보이는 줄을 둬서 frontmatter 밖 내용이 섞이지 않는지
 # 함께 확인한다.
 make_history_flow_tags_fixture() {
@@ -71,8 +71,8 @@ available_locales() {
   local all cand found=""
   all=$(locale -a 2>/dev/null || true)
   for cand in C en_US.UTF-8 ko_KR.UTF-8 ja_JP.UTF-8 de_DE.UTF-8; do
-    # grep -q 는 매치 즉시 종료해 상류에 SIGPIPE를 보낸다.
-    # pipefail 하에서는 그 141이 파이프라인 결과가 되므로 -q 를 쓰지 않는다.
+    # grep -q는 매치 즉시 종료해 상류에 SIGPIPE를 보낸다.
+    # pipefail이 켜져 있으면 그 141이 파이프라인 결과가 되므로 -q를 쓰지 않는다.
     if [ "$cand" = "C" ] || printf '%s\n' "$all" | grep -xF "$cand" >/dev/null; then
       found="$found $cand"
     fi
@@ -112,7 +112,7 @@ test_locale_independent_output() {
   else
     local first
     first=$(printf '%s' "$differing" | cut -d' ' -f1)
-    nope "로케일 독립성: ${baseline_locale} 대비 ${differing} 에서 index.md가 다름"
+    nope "로케일 독립성: ${baseline_locale} 대비 ${differing}에서 index.md가 다름"
     printf '       --- %s vs %s ---\n' "$baseline_locale" "$first"
     LC_ALL="$first" bash "$SCRIPT" "$dir" >/dev/null 2>&1
     diff <(printf '%s\n' "$baseline") "$dir/_INDEX.md" | sed 's/^/       /'
@@ -151,7 +151,7 @@ test_excludes_self() {
   fi
 }
 
-# --- 테스트 4: 노드의 type·description이 그대로 반영된다 (정렬 수정의 부작용 감시) ---
+# --- 테스트 4: 노드의 type과 description이 그대로 반영된다 (정렬 수정의 부작용 감시) ---
 test_preserves_metadata() {
   local dir="$WORK/case4/docs/knowledge"
   make_fixture "$dir"
@@ -159,7 +159,7 @@ test_preserves_metadata() {
   bash "$SCRIPT" "$dir" >/dev/null 2>&1
 
   if grep -qF '| [릴리스-트랙과-호환성](./릴리스-트랙과-호환성.md) | Concept | 릴리스-트랙과-호환성 설명 |' "$dir/_INDEX.md"; then
-    ok "메타데이터: 한글 노드의 type·description이 온전히 반영됨"
+    ok "메타데이터: 한글 노드의 type과 description이 온전히 반영됨"
   else
     nope "메타데이터: 한글 노드 행이 기대와 다름"
     grep '릴리스' "$dir/_INDEX.md" | sed 's/^/       /'
@@ -181,7 +181,7 @@ test_history_schema() {
   fi
 
   if grep -qF '| 2026-03-04 | [둘째 작업](./2026-03-04-001-claude-둘째-작업.md) | fix, ci |' "$dir/_INDEX.md"; then
-    ok "history 행: 날짜·제목·다중 tags 정확, 본문 목록이 섞이지 않음"
+    ok "history 행: 날짜, 제목, 다중 tags가 정확하고 본문 목록이 섞이지 않음"
   else
     nope "history 행: 기대와 다름"
     grep '둘째' "$dir/_INDEX.md" | sed 's/^/       /'
